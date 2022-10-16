@@ -15,9 +15,9 @@ import Vision
 class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObserver {
     //@Published var fetchedImages: [ImageAsset] = []
     @Published var selectedImages: [ImageAsset] = []
-    @Published var displayImage = UIImage(imageLiteralResourceName: "heart")
-    @Published var filteredImage = UIImage(imageLiteralResourceName: "heart")
-    @Published var currentImage = UIImage(imageLiteralResourceName: "heart")
+    @Published var displayImage = UIImage(imageLiteralResourceName: "InstructionPage")
+    @Published var filteredImage = UIImage(imageLiteralResourceName: "InstructionPage")
+    @Published var currentImage = UIImage(imageLiteralResourceName: "InstructionPage")
     @Published var currentImageIndex = -1
     private var toggleImageIndex = 0
     private var introImage: Bool = true
@@ -225,7 +225,7 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
             displayImage = filteredImage
             speak("Edge View", true)
         case 2: // TODO: change to '?' image
-            displayImage = UIImage(imageLiteralResourceName: "heart")
+            displayImage = UIImage(imageLiteralResourceName: "questionmark")
             speak("Game Mode", true)
         default:
             displayImage = currentImage
@@ -238,8 +238,8 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         switch toggleImageIndex {
         case 1:
             displayImage = filteredImage
-        case 2: // TODO: change to '?' image
-            displayImage = UIImage(imageLiteralResourceName: "heart")
+        case 2:
+            displayImage = UIImage(imageLiteralResourceName: "questionmark")
         default:
             displayImage = currentImage
         }
