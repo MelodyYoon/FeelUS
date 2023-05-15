@@ -32,7 +32,7 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
     private let googleURL = URL(string: "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAJ7uSPxjfUMmX8SF-eSvHd0do0NkehTcA")
     private let speechSynthesizer = AVSpeechSynthesizer()
     
-    private var enableiOSML: Bool = false
+    private var enableiOSML: Bool = true
     
     private lazy var classificationRequest: VNCoreMLRequest = {
         do {
@@ -128,7 +128,7 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
 
         let manager = PHCachingImageManager.default()
         let imageRequestOptions = PHImageRequestOptions()
-        imageRequestOptions.isSynchronous = true
+        imageRequestOptions.isSynchronous = false
         
         //manager.requestImage(for: self.fetchedImages[self.currentImageIndex].asset, targetSize: .init(), contentMode: .default, options: imageRequestOptions) { [self] image, _ in
         manager.requestImage(for: currentImageAsset!.asset, targetSize: .init(), contentMode: .default, options: imageRequestOptions) { [self] image, _ in
@@ -381,14 +381,14 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
                     [
                         "type": "LABEL_DETECTION",
                         "maxResults": 5
-                    ],
+                    ] as [String : Any],
                     // Melody: Face detection is not enabled for implementation
                     /*[
                      "type": "FACE_DETECTION",
                      "maxResults": 10
                      ]*/
                 ]
-            ]
+            ] as [String : Any]
         ]
         
         let data = try? JSONSerialization.data(
