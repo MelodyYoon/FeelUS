@@ -39,7 +39,7 @@ struct ContentView: View {
                             .onChanged {value in
                                 //                            print("*****onChanged", pickedColor)
                                 if (dragStartTime == Date(timeIntervalSinceReferenceDate: 0)) { dragStartTime = value.time }
-                                let edgeDensity = imageTouchModel.getRGBColorOfThePixel(at: value.location, within: size, radius: 20)
+                                let edgeDensity = imageTouchModel.getRGBColorOfThePixel(at: value.location, within: size, radius: 10)
                                 if (edgeDensity>0.01) {
                                     print("Edge detected", value.location, edgeDensity)
                                     hapticManager.startHapticPlayer(density: Float(edgeDensity))
