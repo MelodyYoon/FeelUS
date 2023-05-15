@@ -13,6 +13,7 @@ class HapticManager: ObservableObject {
     private var hapticPlayer: CHHapticAdvancedPatternPlayer? = nil
     private var audioPlayer:AVAudioPlayer? = nil
     private var hapticON: Bool = false
+    private var hapticStarted: Bool = false
     
     init() {
         createAudioPlayer("vibration")
@@ -69,6 +70,7 @@ class HapticManager: ObservableObject {
                 if (hapticON == false) {
                     try hapticEngine!.start()
                     try hapticPlayer?.start(atTime: CHHapticTimeImmediate)
+                    hapticStarted = true;
                 }
                 try hapticPlayer?.sendParameters([intensity], atTime: CHHapticTimeImmediate)
                 hapticON = true
@@ -85,7 +87,7 @@ class HapticManager: ObservableObject {
     
     func stopHapticPlayer() {
         hapticON = false
-        if ((hapticEngine) != nil) {
+        if ((hapticEngine) != nil && hapticStarted) {
             do {
                 try hapticPlayer?.stop(atTime: CHHapticTimeImmediate)
             } catch {

@@ -120,7 +120,10 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         if (self.currentImageIndex < 0) { self.currentImageIndex = self.fetchedImages.count-1 }
         */
         currentImageLabel = nil
-        if (self.imageCollection!.count == 0) { return }
+        if (self.imageCollection!.count == 0) {
+            noPhoto ()
+            return
+        }
         self.currentImageIndex -= 1
         if (self.currentImageIndex < 0) { self.currentImageIndex = self.imageCollection!.count-1 }
         
@@ -153,7 +156,10 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         if (self.currentImageIndex >= self.fetchedImages.count) { self.currentImageIndex = 0 }
         */
         currentImageLabel = nil
-        if (self.imageCollection!.count == 0) { return }
+        if (self.imageCollection!.count == 0) {
+            noPhoto ()
+            return
+        }
         self.currentImageIndex += 1
         if (self.currentImageIndex >= self.imageCollection!.count) { self.currentImageIndex = 0 }
         
@@ -161,7 +167,7 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         
         let manager = PHCachingImageManager.default()
         let imageRequestOptions = PHImageRequestOptions()
-        imageRequestOptions.isSynchronous = true
+        imageRequestOptions.isSynchronous = false
         
         //manager.requestImage(for: self.fetchedImages[self.currentImageIndex].asset, targetSize: .init(), contentMode: .default, options: imageRequestOptions) { [self] image, _ in
         manager.requestImage(for: currentImageAsset!.asset, targetSize: .init(), contentMode: .default, options: imageRequestOptions) { [self] image, _ in    DispatchQueue.main.async {
@@ -446,6 +452,15 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         DispatchQueue.main.async {
             self.fetchImages()
             print("photoLibraryDidChange")
+        }
+    }
+    
+    func noPhoto () {
+        let status = PHPhotoLibrary.authorizationStatus()
+        if (status == PHAuthorizationStatus.denied) {
+            self.speak("Please allow photo access in FeelUS setting.", true)
+        } else {
+            self.speak("No photo. Please take photos or add selected photos in FeelUS setting.", true)
         }
     }
 }
