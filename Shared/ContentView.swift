@@ -16,6 +16,9 @@ struct ContentView: View {
     @StateObject var hapticManager = HapticManager()
     @GestureState var isDetectingLongPress = false
     @State var dragStartTime = Date(timeIntervalSinceReferenceDate: 0)
+    @State var showAlert = false
+    @State var alertType = 0;
+    @State var volumeAlerted = false;
     @Environment(\.scenePhase) var scenePhase
 
     var body: some View {
@@ -39,14 +42,16 @@ struct ContentView: View {
                             .onChanged {value in
                                 //                            print("*****onChanged", pickedColor)
                                 if (dragStartTime == Date(timeIntervalSinceReferenceDate: 0)) { dragStartTime = value.time }
-                                let edgeDensity = imageTouchModel.getRGBColorOfThePixel(at: value.location, within: size, radius: 10)
-                                if (edgeDensity>0.01) {
-                                    print("Edge detected", value.location, edgeDensity)
-                                    hapticManager.startHapticPlayer(density: Float(edgeDensity))
-                                    //let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
-                                    //impactHeavy.impactOccurred()
-                                } else {
-                                    hapticManager.stopHapticPlayer()
+                                if (!imageTouchModel.mainMenu) {
+                                    let edgeDensity = imageTouchModel.getRGBColorOfThePixel(at: value.location, within: size, radius: 10)
+                                    if (edgeDensity>0.01) {
+                                        print("Edge detected", value.location, edgeDensity)
+                                        hapticManager.startHapticPlayer(density: Float(edgeDensity))
+                                        //let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                                        //impactHeavy.impactOccurred()
+                                    } else {
+                                        hapticManager.stopHapticPlayer()
+                                    }
                                 }
                                 //self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
                             }   // 4.
@@ -54,11 +59,27 @@ struct ContentView: View {
                                 hapticManager.stopHapticPlayer()
                                 if ((value.time.timeIntervalSinceReferenceDate - dragStartTime.timeIntervalSinceReferenceDate) < 1) {
                                     let swipeThreshold = size.width/5
-                                    if ((value.location.x - value.startLocation.x) > swipeThreshold) {
-                                        imageTouchModel.nextImage()
+                                    if (value.startLocation.x < 30 && (value.location.x - value.startLocation.x) > swipeThreshold/3) {
+                                        print("edge");
+                                        imageTouchModel.gotoMainMenu()
+                                    } else if ((value.location.x - value.startLocation.x) > swipeThreshold) {
+                                        alertType = imageTouchModel.nextImage()
+                                        if (alertType < 0) {
+                                            showAlert = true
+                                        } else if (alertType > 0 && !volumeAlerted) {
+                                            showAlert = true
+                                            volumeAlerted = true
+                                        }
                                     }
                                     else if ((value.location.x - value.startLocation.x) < -swipeThreshold) {
-                                        imageTouchModel.prevImage()
+                                        alertType = imageTouchModel.prevImage()
+                                        if (alertType < 0) {
+                                            showAlert = true
+                                        } else if (alertType > 0 && !volumeAlerted) {
+                                            showAlert = true
+                                            volumeAlerted = true
+                                        }
+
                                     }
                                     else if ((value.location.y - value.startLocation.y) < -swipeThreshold) {
                                         imageTouchModel.imageInfo()
@@ -89,6 +110,17 @@ struct ContentView: View {
                     }
                     .padding()
                 }*/
+            }
+            .alert(isPresented: $showAlert) {
+                if self.alertType == -1 {
+                    return Alert(title: Text("No Photo"),message: Text("Please allow photo access in FeelUS setting."))
+                } else if self.alertType == -2 {
+                    return Alert(title: Text("No Photo"),message: Text("Please take photos or add selected photos in FeelUS setting."))
+                } else if self.alertType == 1 {
+                    return Alert(title: Text("Low Volume"),message: Text("You can increase volume to listen voice navigation."))
+                } else {
+                    return Alert(title: Text("Low Volume"),message: Text("You can increase volume to listen voice navigation and touch sound."))
+                }
             }
             /*.frame(height: 450)
             // MARK: SwiftUI Bug

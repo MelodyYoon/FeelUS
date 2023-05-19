@@ -11,6 +11,7 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 import CoreML
 import Vision
+import CoreHaptics
 
 class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObserver {
     //@Published var fetchedImages: [ImageAsset] = []
@@ -33,11 +34,13 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
     private let speechSynthesizer = AVSpeechSynthesizer()
     
     private var enableiOSML: Bool = true
+    var mainMenu: Bool = true
     
     private lazy var classificationRequest: VNCoreMLRequest = {
         do {
             var config = MLModelConfiguration()
             let model = try VNCoreMLModel(for: MobileNetV2(configuration: config).model)
+            //let model = try VNCoreMLModel(for: Resnet50(configuration: config).model)
             let request = VNCoreMLRequest(model: model) { request, _ in
                 if let classifications =
                     request.results as? [VNClassificationObservation] {
@@ -113,18 +116,22 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         }*/
     }
     
-    func prevImage() {
+    func prevImage() -> Int{
         /*
         if (self.fetchedImages.count == 0) { return }
         self.currentImageIndex -= 1
         if (self.currentImageIndex < 0) { self.currentImageIndex = self.fetchedImages.count-1 }
         */
         currentImageLabel = nil
-        if (self.imageCollection!.count == 0) {
-            noPhoto ()
-            return
+        let exception = exceptionHandling ()
+        if (exception < 0) {
+            return exception
         }
-        self.currentImageIndex -= 1
+        
+        if (!mainMenu) {
+            self.currentImageIndex -= 1
+        }
+        mainMenu = false;
         if (self.currentImageIndex < 0) { self.currentImageIndex = self.imageCollection!.count-1 }
         
         currentImageAsset = .init(asset: imageCollection!.object(at: self.currentImageIndex))
@@ -147,20 +154,27 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
                 self.introImage = false
             }
         }
+        return exception;
     }
     
-    func nextImage() {
+    func nextImage() -> Int {
         /*
         if (self.fetchedImages.count == 0) { return }
         self.currentImageIndex += 1
         if (self.currentImageIndex >= self.fetchedImages.count) { self.currentImageIndex = 0 }
         */
         currentImageLabel = nil
-        if (self.imageCollection!.count == 0) {
-            noPhoto ()
-            return
+        let exception = exceptionHandling ()
+        if (exception < 0) {
+            return exception
         }
-        self.currentImageIndex += 1
+        
+        if (!mainMenu) {
+            self.currentImageIndex += 1
+        }
+        mainMenu = false;
+
+        if (self.currentImageIndex < 0) { self.currentImageIndex = 0 }
         if (self.currentImageIndex >= self.imageCollection!.count) { self.currentImageIndex = 0 }
         
         currentImageAsset = .init(asset: imageCollection!.object(at: self.currentImageIndex))
@@ -182,10 +196,11 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
                 self.introImage = false
             }
         }
+        return exception;
     }
     
     func imageInfo() {
-        if introImage { return }
+        if introImage || mainMenu { return }
         
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -237,6 +252,13 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
             displayImage = currentImage
             speak("Original Photo", true)
         }
+        mainMenu = false;
+        objectWillChange.send()
+    }
+
+    func gotoMainMenu() {
+        mainMenu = true
+        displayImage = UIImage(imageLiteralResourceName: "InstructionPage")
         objectWillChange.send()
     }
     
@@ -455,12 +477,27 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         }
     }
     
-    func noPhoto () {
-        let status = PHPhotoLibrary.authorizationStatus()
-        if (status == PHAuthorizationStatus.denied) {
-            self.speak("Please allow photo access in FeelUS setting.", true)
+    func exceptionHandling () -> Int {
+        if (self.imageCollection!.count == 0) {
+            let status = PHPhotoLibrary.authorizationStatus()
+            if (status == PHAuthorizationStatus.denied) {
+                self.speak("Please allow photo access in FeelUS setting.", true)
+                return -1;
+            } else {
+                self.speak("No photo. Please take photos or add selected photos in FeelUS setting.", true)
+                return -2;
+            }
         } else {
-            self.speak("No photo. Please take photos or add selected photos in FeelUS setting.", true)
+            let audioSession = AVAudioSession.sharedInstance()
+            let hapticCapability = CHHapticEngine.capabilitiesForHardware()
+            if (audioSession.outputVolume < 0.1) {
+                if (hapticCapability.supportsHaptics) {
+                    return 1
+                } else {
+                    return 2
+                }
+            }
         }
+        return 0;
     }
 }
