@@ -18,7 +18,6 @@
 		AD836771283D49C100241385 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD836747283D49C100241385 /* Assets.xcassets */; };
 		ADBD0EF0283D840900701101 /* ImageAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBD0EEF283D840900701101 /* ImageAsset.swift */; };
 		ADBD0EF3283D845D00701101 /* ImageTouchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBD0EF2283D845D00701101 /* ImageTouchViewModel.swift */; };
-		D71350F22A15E31100E5DDCE /* FeelUS--iOS--Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D7CE64F228C4312000FA815A /* FeelUS--iOS--Info.plist */; };
 		D7A9E6FC28C47888009C6780 /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = D7A9E6FB28C47888009C6780 /* MobileNetV2.mlmodel */; };
 		D7BF59E428BDCDAB00951AFF /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7BF59E328BDCDAB00951AFF /* HapticManager.swift */; };
 		D7D7AB5928C2AF3D007B56AC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD836747283D49C100241385 /* Assets.xcassets */; };
@@ -60,7 +59,6 @@
 		ADBD0EF2283D845D00701101 /* ImageTouchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTouchViewModel.swift; sourceTree = "<group>"; };
 		D7A9E6FB28C47888009C6780 /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
 		D7BF59E328BDCDAB00951AFF /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
-		D7CE64F228C4312000FA815A /* FeelUS--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "FeelUS--iOS--Info.plist"; sourceTree = "<group>"; };
 		D7D7AB5B28C2B6BA007B56AC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D7F8988528C1D9E5009294D3 /* vibration.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = vibration.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -100,7 +98,6 @@
 		AD83673F283D49C000241385 = {
 			isa = PBXGroup;
 			children = (
-				D7CE64F228C4312000FA815A /* FeelUS--iOS--Info.plist */,
 				AD836744283D49C000241385 /* Shared */,
 				AD836753283D49C100241385 /* macOS */,
 				AD83675C283D49C100241385 /* Tests iOS */,
@@ -275,7 +272,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1340;
-				LastUpgradeCheck = 1340;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					AD83674B283D49C100241385 = {
 						CreatedOnToolsVersion = 13.4;
@@ -319,7 +316,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D71350F22A15E31100E5DDCE /* FeelUS--iOS--Info.plist in Resources */,
 				D7D7AB5C28C2B6BA007B56AC /* Launch Screen.storyboard in Resources */,
 				AD836771283D49C100241385 /* Assets.xcassets in Resources */,
 				D7F8988628C1D9E5009294D3 /* vibration.mp3 in Resources */,
@@ -440,6 +436,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -499,6 +496,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -524,7 +522,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = V9CKBBN735;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -562,7 +560,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = V9CKBBN735;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -604,6 +602,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -630,6 +629,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -692,6 +692,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
@@ -710,6 +711,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;

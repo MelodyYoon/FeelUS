@@ -490,7 +490,7 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         } else {
             let audioSession = AVAudioSession.sharedInstance()
             let hapticCapability = CHHapticEngine.capabilitiesForHardware()
-            if (audioSession.outputVolume < 0.1) {
+            if (audioSession.outputVolume < 0.15) {
                 if (hapticCapability.supportsHaptics) {
                     return 1
                 } else {

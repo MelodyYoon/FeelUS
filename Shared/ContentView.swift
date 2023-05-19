@@ -60,7 +60,6 @@ struct ContentView: View {
                                 if ((value.time.timeIntervalSinceReferenceDate - dragStartTime.timeIntervalSinceReferenceDate) < 1) {
                                     let swipeThreshold = size.width/5
                                     if (value.startLocation.x < 30 && (value.location.x - value.startLocation.x) > swipeThreshold/3) {
-                                        print("edge");
                                         imageTouchModel.gotoMainMenu()
                                     } else if ((value.location.x - value.startLocation.x) > swipeThreshold) {
                                         alertType = imageTouchModel.nextImage()
