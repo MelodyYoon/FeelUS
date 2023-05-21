@@ -67,6 +67,7 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         } catch let error {
             print("This error message from SpeechSynthesizer \(error.localizedDescription)")
         }
+        usleep(200000)
     }
     
     // MARK: Fetching Images
