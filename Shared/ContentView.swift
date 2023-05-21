@@ -58,7 +58,7 @@ struct ContentView: View {
                             .onEnded {value in
                                 hapticManager.stopHapticPlayer()
                                 if ((value.time.timeIntervalSinceReferenceDate - dragStartTime.timeIntervalSinceReferenceDate) < 1) {
-                                    let swipeThreshold = size.width/5
+                                    let swipeThreshold = size.width/8
                                     if (value.startLocation.x < 30 && (value.location.x - value.startLocation.x) > swipeThreshold/3) {
                                         imageTouchModel.gotoMainMenu()
                                     } else if ((value.location.x - value.startLocation.x) > swipeThreshold) {
