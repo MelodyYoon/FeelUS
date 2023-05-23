@@ -25,7 +25,6 @@ struct ContentView: View {
         //NavigationView{
             GeometryReader{ proxy in
                 let size = proxy.size
-                if #available(iOS 15.0, *) {
                     Image(uiImage: imageTouchModel.displayImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -33,11 +32,14 @@ struct ContentView: View {
                         .background(Color.black)
                         .onChange(of: scenePhase) { newPhase in
                             if newPhase == .inactive {
-                                print("Inactive")
+                                print("Image(uiImage: imageTouchModel.displayImage).inactive")
                                 hapticManager.stopHapticPlayer()
                                 imageTouchModel.stopSpeak()
                             }
                         }
+                        .overlay(
+                            Text(imageTouchModel.statusString()).padding(0).foregroundColor(.gray).opacity(0.6), alignment: .bottom
+                        )
                         .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
                             .onChanged {value in
                                 //                            print("*****onChanged", pickedColor)
@@ -58,8 +60,8 @@ struct ContentView: View {
                             .onEnded {value in
                                 hapticManager.stopHapticPlayer()
                                 if ((value.time.timeIntervalSinceReferenceDate - dragStartTime.timeIntervalSinceReferenceDate) < 1) {
-                                    let swipeThreshold = size.width/8
-                                    if (value.startLocation.x < 30 && (value.location.x - value.startLocation.x) > swipeThreshold/3) {
+                                    let swipeThreshold = size.width/16
+                                    if (value.startLocation.x < 30 && (value.location.x - value.startLocation.x) > swipeThreshold) {
                                         imageTouchModel.gotoMainMenu()
                                     } else if ((value.location.x - value.startLocation.x) > swipeThreshold) {
                                         alertType = imageTouchModel.nextImage()
@@ -94,9 +96,6 @@ struct ContentView: View {
                                 //self.newPosition = self.currentPosition
                             }
                         )
-                } else {
-                    // Fallback on earlier versions
-                }
                     
                 /*ForEach(pickedImages,id: \.self){image in
                     GeometryReader{proxy in
@@ -110,6 +109,7 @@ struct ContentView: View {
                     .padding()
                 }*/
             }
+            .background(Color.black.ignoresSafeArea())
             .alert(isPresented: $showAlert) {
                 if self.alertType == -1 {
                     return Alert(title: Text("No Photo"),message: Text("Please allow photo access in FeelUS setting."))

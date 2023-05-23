@@ -36,6 +36,10 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
     private var enableiOSML: Bool = true
     var mainMenu: Bool = true
     
+    private var audioError: Bool = false
+    private var fetchImageCnt: Int = 0
+    
+    
     private lazy var classificationRequest: VNCoreMLRequest = {
         do {
             var config = MLModelConfiguration()
@@ -63,20 +67,26 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         
         // Enable audio navigation while silence is on
         do {
+            // Help to remove "[catalog] Unable to list voice folder" error
+            // from https://developer.apple.com/forums/thread/712809
+            // print("AVSpeechSynthesisVoice.speechVoices()")
+            // AVSpeechSynthesisVoice.speechVoices() // Fetch voice dependencies
+            //
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
         } catch let error {
+            audioError = true
             print("This error message from SpeechSynthesizer \(error.localizedDescription)")
         }
         usleep(200000)
     }
     
-    // MARK: Fetching Images
     func fetchImages() {
         /*PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-            if status == .authorized {
-                return
-            }
-        }*/
+         if status == .authorized {
+         return
+         }
+         }*/
+        print ("fetchImages()")
         let options = PHFetchOptions()
         
         //var imageCount = 0
@@ -85,9 +95,12 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         // Fetch whole images which are permitted
         // If you want to contol # of images fetched, it can be managed in the permission control.
         options.includeHiddenAssets = false
-        options.includeAssetSourceTypes = [.typeUserLibrary]
+        options.includeAssetSourceTypes = [.typeUserLibrary, .typeiTunesSynced]
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         imageCollection = PHAsset.fetchAssets(with: .image, options: options)
+        
+        fetchImageCnt += 1;
+        
         /*
         PHAsset.fetchAssets(with: .image, options: options).enumerateObjects { asset, _, _ in
             let imageAsset: ImageAsset = .init(asset: asset)
@@ -212,8 +225,9 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
             classifyImage(self.currentImage)
         } else {
             // Google Cloud Vision API, which costs
+            /* enableiOSML:
             let binaryImageData = base64EncodeImage(self.currentImage)
-            createRequest(with: binaryImageData)
+            enableiOSML: createRequest(with: binaryImageData) */
         }
     }
     
@@ -388,6 +402,7 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         return imagedata!.base64EncodedString(options: .endLineWithCarriageReturn)
     }
     
+    /* enableiOSML:
     func createRequest(with imageBase64: String) {
         // Create our request URL
         if (self.currentImageLabel != nil) {
@@ -429,7 +444,7 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         
         // Run the request on a background thread
         DispatchQueue.global().async { self.runRequestOnBackgroundThread(request) }
-    }
+    }*/
     
     func runRequestOnBackgroundThread(_ request: URLRequest) {
         let task: URLSessionDataTask = session.dataTask(with: request) { (data, response, error) in
@@ -498,5 +513,34 @@ class ImageTouchViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObser
             }
         }
         return 0;
+    }
+    
+    func statusString () -> String {
+        var result: String = ""
+
+        result += String(imageCollection!.count) + " Photo(s)"
+        
+        if (fetchImageCnt == 0) {
+            result += "."
+        }
+
+        result += " "
+        let status = PHPhotoLibrary.authorizationStatus()
+        if (status != PHAuthorizationStatus.authorized) {
+            result += "-" // + String(status.rawValue)
+        }
+        
+        let hapticCapability = CHHapticEngine.capabilitiesForHardware()
+        if (!hapticCapability.supportsHaptics) {
+            result += "FeelUS"
+        } else {
+            result += "  FeelUS"
+        }
+        
+        if (audioError) {
+            result += "."
+        }
+        
+        return result
     }
 }
